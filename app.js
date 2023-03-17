@@ -11,7 +11,8 @@ let gameState = {
     [null, null, null],
     [null, null, null],
   ],
-  currentPlayer: "x",
+  currentPlayerName: "X",
+  currentPlayer: "X",
 };
 
 for (let i = 0; i < 3; i++) {
@@ -26,12 +27,25 @@ const formName = document.getElementById("name-form");
 formName.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  //on submit we want :target value for first input to replace null value in
-  //gamestate for player 1 and player 2
   gameState.player1 = e.target[0].value;
   gameState.player2 = e.target[1].value;
-  renderScoreboard();
+  // if (e.target[1].value === "") {
+  // should make player 2 name "computer" if 2nd name is left blank
+  //gameState.player2 = "Computer";
+  //} else {
+
+  gameState.currentPlayerName = gameState.player1;
+
+  renderTurn();
 });
+
+//if gameState.player2==="Computer"
+
+function renderTurn() {
+  turn.innerText = `Turn: It's ${gameState.currentPlayerName}'s turn`;
+}
+
+renderTurn();
 
 board.addEventListener("click", (e) => {
   const row = e.target.id[0];
@@ -46,9 +60,13 @@ board.addEventListener("click", (e) => {
 
   renderBoard();
 
-  declareWinner();
+  checkWin();
 
   switchPlayers();
+
+  renderTurn();
+
+  checkDraw();
 });
 
 function renderBoard() {
@@ -61,16 +79,37 @@ function renderBoard() {
 }
 
 function switchPlayers() {
-  if (gameState.currentPlayer === "x") {
-    gameState.currentPlayer = "o";
+  if (gameState.currentPlayer === "X") {
+    gameState.currentPlayer = "O";
+    gameState.currentPlayerName = gameState.player2;
   } else {
-    gameState.currentPlayer = "x";
+    gameState.currentPlayer = "X";
+    gameState.currentPlayerName = gameState.player1;
   }
 }
-function declareWinner() {
-  checkRow();
+
+function checkWin() {
   checkCol();
+  checkRow();
   checkDiagonals();
+}
+
+function checkDraw() {
+  let count = 0;
+  for (let i = 0; i < gameState.board.length; i++) {
+    for (j = 0; j < gameState.board.length; j++) {
+      const currentCell = gameState.board[i][j];
+      if (currentCell !== null) {
+        count++;
+        console.log("This board piece is null", i, j);
+        // return;
+      }
+    }
+  }
+  if (count === 9) {
+    alert(`No winner! "Clear" game to play again`);
+    console.log("Will this ever log");
+  }
 }
 
 function checkRow() {
@@ -80,6 +119,7 @@ function checkRow() {
       gameState.board[i][0] === gameState.board[i][1] &&
       gameState.board[i][1] === gameState.board[i][2]
     ) {
+      declareWinner();
       console.log("We have a winnner");
     }
   }
@@ -92,6 +132,7 @@ function checkCol() {
       gameState.board[0][j] === gameState.board[1][j] &&
       gameState.board[1][j] === gameState.board[2][j]
     ) {
+      declareWinner();
       console.log("We win");
     }
   }
@@ -103,32 +144,58 @@ function checkDiagonals() {
     gameState.board[0][0] === gameState.board[1][1] &&
     gameState.board[1][1] === gameState.board[2][2]
   ) {
+    declareWinner();
     console.log("Winner winner");
   } else if (
     gameState.board[0][2] !== null &&
     gameState.board[0][2] === gameState.board[1][1] &&
     gameState.board[1][1] === gameState.board[2][0]
   ) {
+    declareWinner();
     console.log("Last win cond");
   }
 }
+function declareWinner() {
+  alert(`${gameState.currentPlayerName} is the winner!`);
+}
 
-//check for winning condition after every click; "x" or "o"
+//check for winning condition after every click; "X" or "o"
 
 clearBoardButton.addEventListener("click", resetBoard);
 
 function resetBoard() {
   console.log("Board has been reset");
   gameState = {
+    player1: gameState.player1,
+    player2: gameState.player2,
+
     board: [
       [null, null, null],
       [null, null, null],
       [null, null, null],
     ],
-    currentPlayer: "x",
+    currentPlayer: "X",
+    currentPlayerName: "X",
   };
   renderBoard();
+  renderTurn();
 }
+// gameState = {
+// player1: "c",
+// player2: "m",
+
+// board: [
+//   [null, null, null],
+//   [null, null, null],
+//   [null, null, null],
+// ],
+// currentPlayerName: "X",
+// currentPlayer: "X",
+// }
+
+let count = 0;
+count = count + 1;
+
 // class ticTacToe = {
 //   constructor(){
 //     this.board = [

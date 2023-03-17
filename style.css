@@ -2,10 +2,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  background-color: rgb(240, 95, 95);
 }
 
 .board {
-  background-color: brown;
+  color: rgba(81, 42, 165, 0.481);
   display: grid;
   height: 400px;
   width: 400px;
@@ -18,4 +19,9 @@
   border: 2px solid black;
   align-content: center;
   justify-content: center;
+  color: rgba(81, 42, 165, 0.481);
+}
+#name-form {
+  display: flex;
+  font-size: 14rem;
 }
